@@ -1,47 +1,106 @@
 import pygame
+from color import *
+import random
+
+TOTAL_SCORE = 0
+BOARD_SIZE = 4
 
 pygame.init()
 
-white = (255, 255, 255)
-yellow = (235, 243, 65)
+surface = pygame.display.set_mode((400, 500))
 
-gameDisplay = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("2048")
 
-gameTerminate = False
-X = 200
-Y = 100
-X_change = 0
-Y_change = 0
+font = pygame.font.SysFont("monospace", 20)
+score_font = pygame.font.SysFont("monospace", 50)
 
-clock = pygame.time.Clock()
+tile_matrix = [[0, 0, 0, 0],
+               [0, 0, 0 ,0],
+               [0, 0, 0, 0],
+               [0, 0, 0 ,0]]
 
-while not gameTerminate :
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            gameTerminate = True
+undo_matrix = []
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT :
+def main() :
+    gameExit = False
+    placeRandomTile()
+    placeRandomTile()
+    printMatrix()
 
-                pygame.draw.rect(gameDisplay, yellow, (X, Y, 400, 400))
-                pygame.display.update()
-            if event.key == pygame.K_RIGHT :
-                X_change = 5
-                Y_change = 0
-            if event.key == pygame.K_UP :
-                Y_change = -5
-                X_change = 0
-            if event.key == pygame.K_DOWN :
-                Y_change = 5
-                X_change = 0
+    while not gameExit :
+        for event in pygame.event.get() :
+            if event.type == pygame.QUIT :
+                gameExit = True
 
-            X += X_change
-            Y += Y_change
-    clock.tick(30)
+            if checkIfcando():
+                if event.type == pygame.KEYDOWN and isArrow(event.key):
+                    addToUndo()
+                    rotation_num = getRotationNum(event.key)
 
-    gameDisplay.fill(white)
-    pygame.draw.rect(gameDisplay, yellow, (X, Y, 400, 400))
-    pygame.display.update()
+            # rotation_num만큼 반시계방향으로 회전시킴
+                for number in range(0, rotation_num):
+                    rotateCCW()
 
-pygame.quit()
+                if canMove():
+                    moveTiles()
+                    mergeTiles()
+                    placeRandomTile()
+
+                for count in range(0, (4 - rotation_num) % 4):
+                    rotateCCW()
+
+                printMatrix()
+
+            else:
+                printGameOver()
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_u:
+                unDo()
+
+        pygame.display.update()
+
+def rotateCCW() :
+    temp = tile_matrix[:]
+    for n in range(0,4) :
+        tile_matrix[n] = temp[3-n]
+    temp = tile_matrix[:]
+
+    for x in range(0,4) :
+        for y in range(0,4) :
+            tile_matrix[x][y] = temp[3-y][3-x]
+
+def isArrow(K) :
+    if K in (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN) :
+        return True
+
+    else :
+        return False
+
+def getRotationNum(K) :
+    if K == pygame.K_UP :
+        return 0
+    elif K == pygame.K_DOWN :
+        return 2
+    elif K == pygame.K_LEFT :
+        return 3
+    elif K == pygame.K_RIGHT :
+        return 1
+
+def checkIfcando() :
+    if 0 in tile_matrix :
+        return True
+    for x in range(0, 4) :
+        for y in range(0, 3) :
+            if tile_matrix[x][y] == tile_matrix[x][y+1] :
+                return True
+    for x in range(0, 3) :
+        for y in range(0, 4) :
+            if tile_matrix[x][y] == tile_matrix[x+1][y] :
+                return True
+    return False
+
+def printMatrix() :
+    surface.fill(white)
+
+
+main()
