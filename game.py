@@ -141,6 +141,16 @@ def placeRandomTile() :
     tile_matrix[rand_x][rand_y] = random.choice(list)
     print(tile_matrix[rand_x][rand_y])
 
+def canMove() :
+    for x in range(0,3) :
+        for y in range(0,4) :
+            if tile_matrix[x][y] ==tile_matrix[x+1][y] or tile_matrix[x][y] == 0 :
+                return True
+    return False
+
+def moveTiles() :
+    for y in range(0,4) :
+        for x in range(0,3) :
 
 
 main()
