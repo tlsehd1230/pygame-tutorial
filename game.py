@@ -11,17 +11,19 @@ surface = pygame.display.set_mode((400, 500))
 
 pygame.display.set_caption("2048")
 
-font = pygame.font.SysFont("monospace", 20)
-score_font = pygame.font.SysFont("monospace", 50)
+font_40 = pygame.font.SysFont("D2Coding", 40)
+font_50 = pygame.font.SysFont("D2Coding", 50)
+font_70 = pygame.font.SysFont("D2Coding", 70)
 
 tile_matrix = [[0, 0, 0, 0],
-               [0, 0, 0 ,0],
+               [0, 0, 0, 0] ,
                [0, 0, 0, 0],
-               [0, 0, 0 ,0]]
+               [0, 0, 0, 0]]
 
 undo_matrix = []
 
 def main() :
+
     gameExit = False
     placeRandomTile()
     placeRandomTile()
@@ -57,6 +59,7 @@ def main() :
             if event.type == pygame.KEYDOWN and event.key == pygame.K_u:
                 unDo()
 
+        printMatrix()
         pygame.display.update()
 
 def rotateCCW() :
@@ -101,6 +104,43 @@ def checkIfcando() :
 
 def printMatrix() :
     surface.fill(white)
+    pygame.draw.rect(surface, gray, (25, 125, 350, 350))
+    for l in range(0,4) :
+        for p in range(0,4) :
+            pygame.draw.rect(surface, dictionary[tile_matrix[l][p]], (25+87.5*l, 125+87.5*p, 87.5, 87.5))
+            if tile_matrix[l][p] != 0 :
+                if tile_matrix[l][p] > 999 :
+                    selected_font = font_40
+                else :
+                    selected_font = font_50
+
+                label = selected_font.render(str(tile_matrix[l][p]), True, black)
+                width = label.get_width()
+                height = label.get_height()
+                surface.blit(label, (25+87.5*l+(87.5-width)/2, 125+87.5*p+(87.5-height)/2))
+    pygame.draw.rect(surface, gray, (135, 30, 130, 40))
+    score_label = font_40.render(str(TOTAL_SCORE), True, black)
+    score_width = score_label.get_width()
+    score_height = score_label.get_height()
+    surface.blit(score_label, (135+(130-score_width)/2, 30+(40-score_height)/2))
+
+def printGameOver() :
+    surface.fill(black)
+    gameover_label = font_70.render("GAMEOVER", True, white)
+    gameover_width = gameover_label.get_width()
+    gameover_height = gameover_label.get_height()
+    surface.blit(gameover_label, ((400-gameover_width)/2,(500-gameover_height)/2))
+
+def placeRandomTile() :
+    rand_x = random.randrange(0,4)
+    rand_y = random.randrange(0,4)
+    while tile_matrix[rand_x][rand_y] != 0 :
+        rand_x = random.randrange(0, 4)
+        rand_y = random.randrange(0, 4)
+    list = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4]
+    tile_matrix[rand_x][rand_y] = random.choice(list)
+    print(tile_matrix[rand_x][rand_y])
+
 
 
 main()
