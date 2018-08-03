@@ -120,8 +120,11 @@ def getRotationNum(K) :
         return 1
 
 def checkIfcando() :
-    if 0 in tile_matrix :
-        return True
+    for x in range(0,4) :
+        for y in range(0,4) :
+            if tile_matrix[x][y] == 0:
+                return True
+
     for x in range(0, 4) :
         for y in range(0, 3) :
             if tile_matrix[x][y] == tile_matrix[x][y+1] :
@@ -174,7 +177,7 @@ def placeRandomTile() :
     while tile_matrix[rand_x][rand_y] != 0 :
         rand_x = random.randrange(0, 4)
         rand_y = random.randrange(0, 4)
-    list = [2, 2, 2, 2, 2, 2, 2, 2, 2, 4]
+    list = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4]
     tile_matrix[rand_x][rand_y] = random.choice(list)
 
 def canMove() :
