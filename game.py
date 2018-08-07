@@ -16,7 +16,7 @@ font_50 = pygame.font.SysFont("D2Coding", 50)
 font_70 = pygame.font.SysFont("D2Coding", 70)
 
 tile_matrix = [[0, 0, 0, 0],
-               [0, 0, 0, 0] ,
+               [0, 0, 0, 0],
                [0, 0, 0, 0],
                [0, 0, 0, 0]]
 
@@ -59,7 +59,6 @@ def main() :
 
                     rotation_num = getRotationNum(event.key)
 
-                    # rotation_num만큼 반시계방향으로 회전시킴
                     for number in range(0, rotation_num):
                         rotateCCW()
 
@@ -183,7 +182,7 @@ def placeRandomTile() :
 def canMove() :
     for x in range(0,3) :
         for y in range(0,4) :
-            if tile_matrix[x][y] ==tile_matrix[x+1][y] or tile_matrix[x][y] == 0 :
+            if (tile_matrix[x][y] == tile_matrix[x+1][y] and tile_matrix[x][y] != 0) or (tile_matrix[x][y] == 0 and tile_matrix[x+1][y] != 0) :
                 return True
     return False
 
